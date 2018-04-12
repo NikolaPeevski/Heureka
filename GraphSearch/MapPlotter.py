@@ -2,6 +2,7 @@ from PyQt5.QtWidgets import QWidget, QApplication
 from PyQt5.QtCore import Qt, QPoint, QLine
 from PyQt5.QtGui import QPen, QPainter, QColor, QFont
 from collections import *
+from GraphUtils import *
 import sys, random
 import time 
 
@@ -11,8 +12,6 @@ class MapPlotter(QWidget):
         super().__init__()
         self.initUI()
 
-        Coordinate = namedtuple('Coordinate', 'x y') 
-        Street = namedtuple('Street', 'StreetName start end')
         self.street_info = []
 
         with open('Paths.txt') as paths:
@@ -64,8 +63,3 @@ class MapPlotter(QWidget):
                 painter.drawText(displace_street + self.get_mid_point(startPoint, endPoint), i.StreetName)
                 street_name_set.add(i.StreetName)
             
-if __name__ == '__main__':
-    
-    app = QApplication(sys.argv)
-    mapPlot = MapPlotter()
-    sys.exit(app.exec_())
