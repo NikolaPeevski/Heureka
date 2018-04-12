@@ -1,6 +1,9 @@
 import math
 from collections import *
 from namedlist import namedlist
+# from PyQt5.QtWidgets import QApplication
+# from MapPlotter import MapPlotter
+# import sys
 
 #Parsing the paths
 ################################################################
@@ -33,14 +36,34 @@ PathsFile.close()
 
 #Creating the graph structure
 Coordinate = namedtuple('Coordinate', 'x y')
+
+
+Coordinate = namedtuple('Coordinate', 'x y') # namedtuple() just makes a tuple readable
 Vertices = [] # Empty List
 EdgeLabel = namedtuple('EdgeLabel', 'streetStretch Coordinate stepCost')
 Edge = [] # Empty List
 Graph = defaultdict(list)
 
+
 #Path Cost calculator
+Street = namedtuple('Street', 'StreetName start end')
+street_info = []
+
+with open('Paths.txt') as paths:
+    for line in paths:
+        entry = line.rstrip('\n').split(' ')
+        if len(entry) == 5:
+            street_info.append(Street(StreetName=entry[2], 
+                start=Coordinate(x=int(entry[0]), y=int(entry[1])), 
+                end=Coordinate(x=int(entry[3]), y=int(entry[4]))))
+
+def getStreetName(coord1, coord2):
+    for i in street_info:
+        if (i.start == coord1 and i.end == coord2):
+            return i.StreetName
+
 def calcCost(Node1,Node2):
-    return pow(pow((Node1[0]-Node2[0]),2) + pow((Node1[1] - Node2[1]),2),0.5)
+    return ((Node1[0]-Node2[0])**2 + (Node1[1] - Node2[1])**2)**0.5
 
 #Getting the vertices and edges and storing them in the graph structure
 for i in Paths:
@@ -67,7 +90,6 @@ def expand(node):
     return childList
 
 
-
 def GraphSearch(initialState, goalState):
     pathCost = 0 # Initiliase path cost to zero
     initialFront = frontierObj(Coordinate=initialState, stepCost=0)
@@ -79,8 +101,8 @@ def GraphSearch(initialState, goalState):
             print("Goal Location: ", goalState)
             print("SUCCESS!")
             return exploredSet
-        location = node.Coordinate
-        print("Intermediate Location: ",location)
+        print("Intermediate Location: ", node.Coordinate)
+
         exploredSet.append(node.Coordinate)
         children = expand(node.Coordinate)
         for child in children:
@@ -91,6 +113,7 @@ def GraphSearch(initialState, goalState):
         frontier = sorted(frontier, key=lambda cost: cost[1])  # Sorting according to cost
     print("FAIL")
     return "Fail"
+
 
 Node = namedlist('Node','Parent State stepCost')
 
@@ -161,4 +184,20 @@ for i in solution:
     print(i.Parent, " -> ", i.State)
 
 
+def pairwise(lst):
+    if not lst: return
+    i = 0
+    while i < (len(lst) - 1):
+        yield lst[i], lst[i+1]
+        i+=2
 
+if __name__ == '__main__':
+    start = (10,70)
+    end = (65,110)
+
+    path = GraphSearch2(start,end)
+    print(path)
+    path.append(end)
+    print('Directions...')
+    for start,end in pairwise(path):
+        print('Walk from {} through {} to get to {}'.format(start, getStreetName(start, end), end))
