@@ -18,16 +18,16 @@ class MainUiClass(QMainWindow, Ui_MainWindow):
         initialize_street_information()
 
     def run_search(self):
-        result = GraphSearch.GraphSearch((10, 70), (65, 110))
+        result = GraphSearch.GraphSearch2((10, 70), (65, 110))
         self.statusConsole.clear()
         self.statusConsole.insertPlainText('Directions...\n\n')
         street_info = initialize_street_information()
         total_cost = 0
-        for start, end in pairwise(result):
-            cost = calcCost(start, end)
+        for node in result:
+            cost = node.stepCost
             total_cost += cost
             msgFormat = 'Walk from {} through {} to get to {}, Cost: {:.2f}\n'
-            self.statusConsole.insertPlainText(msgFormat.format(start, get_street_name(start, end, street_info), end, cost))
+            self.statusConsole.insertPlainText(msgFormat.format(node.Parent, get_street_name(node.Parent, node.State, street_info), node.State, cost))
         self.statusConsole.insertPlainText('\nTotal Cost: {:.2f}'.format(total_cost) + '\n')
         self.statusConsole.insertPlainText('\nRaw Result\n' + str(result) + '\n')
 

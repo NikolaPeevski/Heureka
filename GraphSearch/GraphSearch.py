@@ -20,21 +20,15 @@ for i in readPaths():
     Edge.append(e)
     Graph[parentCoordinate].append(e)
 
-# for k, v in Graph.items():
-#    for a in v:
-#        print("Vertex: (",k.x,", ", k.y, ") " "[",  a.streetStretch, ": ", a.Coordinate, "]"," Step Cost: ",a.pathCost)
-
 def expand(node):
     childList = [] # A named list of children (Coordinates, Step-cost)
-    Edges = Graph[node] # Get edges from Vertex
+    Edges = Graph[node] # Get edges from Vertex - these are the children
     for child in Edges:
         # print(child.Coordinate)
         child = frontierObj(Coordinate=child.Coordinate, stepCost=child.stepCost)
         childList.append(child)
     return childList
 
-
-correct_path = list()
 
 def GraphSearch(initialState, goalState):
     pathCost = 0 # Initiliase path cost to zero
@@ -60,8 +54,62 @@ def GraphSearch(initialState, goalState):
     print("FAIL")
     return "Fail"
 
+
+def expand2(node):
+    childNodes = []
+    children = Graph[node.State] # Gets the children of a node
+    for child in children:
+          childObj = Node(Parent=node.State, State=child.Coordinate, stepCost=child.stepCost)
+          childNodes.append(childObj)
+    return childNodes
+
+
+def pathReconstruction(initState,currState,List,solutionPath):
+    for node in List:
+        if node.State == currState:
+            currNode = node
+            parentState = node.Parent
+    if currState == initState:
+        solutionPath.reverse()
+        return
+    solutionPath.append(currNode)
+    pathReconstruction(initState,currNode.Parent,List,solutionPath)
+
+def GraphSearch2(initialState, goalState):
+    frontier = [] # Will contain the nodes in the frontier
+    frontierSet = [] # Will contain the current state in the frontier
+    pathCost=0
+    fCost=0
+    initNode = Node(Parent=initialState, State=initialState, stepCost=0)
+    pathTrail = []
+    solutionPath = []
+    frontier.append(Frontier(nodeObj=initNode, cost=fCost))
+    frontierSet.append(initialState) # The current state in the frontier
+    exploredSet =[] # Will contain a list of visited nodes
+    while len(frontier) > 0:
+        currNode = (frontier.pop(0))[0] # Remove the node having top priority
+        pathCost = currNode.stepCost + pathCost # Calculate path cost -> Path Cost = Path Cost + step cost (g)
+        if currNode.State == goalState:
+            pathTrail.append(currNode)
+            pathReconstruction(initialState, goalState, pathTrail, solutionPath) # Reconstruct solution path using trail
+            print("SUCCESS!")
+            return solutionPath
+        # print("Intermediate Location: ",node.State)
+        pathTrail.append(currNode)
+        exploredSet.append(currNode.State)
+        children = expand2(currNode)
+        for child in children:
+            if child.State not in frontierSet and child.State not in exploredSet:
+                g = child.stepCost
+                fCost = calcCost(child.State,goalState)  # f = g + h
+                frontier.append(Frontier(nodeObj=child,cost=fCost))
+                frontierSet.append(child.State)
+        frontier = sorted(frontier, key=lambda cost: cost[1])  # Sorting according to cost
+    print("FAIL")
+    return "Fail"
+
 if __name__ == '__main__':
     start = (10,70)
     end = (65,110)
 
-    print_directions(GraphSearch(start,end), end)
+    print_directions2(GraphSearch2(start,end), end)

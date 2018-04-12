@@ -5,7 +5,9 @@ Street = namedtuple('Street', 'StreetName start end')
 Coordinate = namedtuple('Coordinate', 'x y')
 EdgeLabel = namedtuple('EdgeLabel', 'streetStretch Coordinate stepCost')
 frontierObj = namedlist('frontierObj', 'Coordinate stepCost')
-
+Frontier = namedlist('Frontier', 'nodeObj cost')
+Children = namedlist('Children','Parent Child')
+Node = namedlist('Node','Parent State stepCost')
 
 def get_street_name(coord1, coord2, street_info):
     for i in street_info:
@@ -67,3 +69,12 @@ def print_directions(explored, end):
     for start, end in pairwise(explored):
         print('Walk from {} through {} to get to {}'.format(
             start, get_street_name(start, end, street_info), end))
+
+
+def print_directions2(explored, end):
+    street_info = initialize_street_information()
+    print(explored)
+    print('Directions...')
+    for node in explored:
+        print('Walk from {} through {} to get to {}'.format(
+            node.Parent, get_street_name(node.Parent, node.State, street_info), node.State))
