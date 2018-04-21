@@ -12,11 +12,11 @@ class MapPlotter(QWidget):
         super().__init__()
         self.initUI()
         self.street_info = initialize_street_information()
-        self.displace_x = 25
-        self.displace_y = -25
-        self.displace_coord = QPoint(10,0)
-        self.displace_street = QPoint(10, -5)
-        self.scaler = 6.5
+        self.displace_x = 25 #0 #25
+        self.displace_y = -25 #0 #-25
+        self.displace_coord = QPoint(10,0) #QPoint(0,0)
+        self.displace_street = QPoint(10, -5)  #QPoint(0,0)
+        self.scaler = 6.5#85 #6.5
         self.traversed_paths = []
         
     def initUI(self):        
