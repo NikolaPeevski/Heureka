@@ -50,13 +50,14 @@ class MainUiClass(QMainWindow, Ui_MainWindow):
         coordinates = extract_coordinates()
         counter = 0
         benchmark = list()
+        final_cost = list()
         for i in coordinates:
             for j in coordinates:
                 if (i != j):
                     counter = counter+1
                     t0 = time.perf_counter()
                     total_cost = 0
-                    #print('Computing, {} to {}'.format(i, j))
+                    print('Computing, {} to {}'.format(i, j))
                     try:
                        result = GraphSearch.GraphSearch2(i, j)
                     except:
@@ -65,12 +66,13 @@ class MainUiClass(QMainWindow, Ui_MainWindow):
                     for node in result:
                     	cost = node.stepCost
                     	total_cost += cost
+                    final_cost.append(total_cost)
                     benchmark.append((t1-t0)*1000)
                     self.statusConsole.insertPlainText(
                         msgFormat.format(counter, i, j, total_cost, (t1 - t0)*1000))
-        msgFormat = '\nBenchmarks: \nAvg Time: {:.2f}ms\nMin Time: {:.2f}ms\nMax Time: {:.2f}ms'             
+        msgFormat = '\nBenchmarks:\nMean Cost: {:.2f}\nAvg Time: {:.2f}ms\nMin Time: {:.2f}ms\nMax Time: {:.2f}ms'             
         self.statusConsole.insertPlainText(msgFormat.format(
-            statistics.mean(benchmark), min(benchmark), max(benchmark)))            
+            statistics.mean(final_cost), statistics.mean(benchmark), min(benchmark), max(benchmark)))            
 
 
 if __name__ == '__main__':

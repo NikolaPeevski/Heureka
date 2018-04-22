@@ -64,8 +64,8 @@ def reevalPathcost(traversedNodes,initialState,currChild):
     prevPathCost = 0
     newPathCost = 0
     nodes = deepcopy(traversedNodes)
-    prevPathCost = calcPathcost(initialState, currChild.State, nodes, prevPathCost)
-    newPathCost = calcPathcost(initialState, currChild.Parent, nodes, newPathCost) + currChild.stepCost
+    prevPathCost = calcPathcost(initialState, currChild.State, deepcopy(nodes), prevPathCost)
+    newPathCost = calcPathcost(initialState, currChild.Parent, deepcopy(nodes), newPathCost) + currChild.stepCost
     if prevPathCost > newPathCost:
         return True
     else:
