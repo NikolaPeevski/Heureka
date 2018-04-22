@@ -8,6 +8,7 @@ frontierObj = namedlist('frontierObj', 'Coordinate stepCost')
 Frontier = namedlist('Frontier', 'nodeObj cost')
 Children = namedlist('Children','Parent Child')
 Node = namedlist('Node','Parent State stepCost')
+filename = "Paths.txt"
 
 def get_street_name(coord1, coord2, street_info):
     for i in street_info:
@@ -23,7 +24,7 @@ def isLineEmpty(line):
     return len(line.strip()) == 0
 
 
-def readPaths(pathFile='Paths.txt'):
+def readPaths(pathFile=filename):
     Paths = []
     with open(pathFile) as paths:
         for line in paths:
@@ -51,7 +52,7 @@ def pairwise(lst):
 
 def initialize_street_information():
     street_info = []
-    with open('Paths.txt') as paths:
+    with open(filename) as paths:
         for line in paths:
             entry = line.rstrip('\n').split(' ')
             if len(entry) == 5:
