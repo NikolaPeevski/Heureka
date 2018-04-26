@@ -1,7 +1,10 @@
 from collections import *
 from namedlist import namedlist
+
 from copy import deepcopy
 import  itertools
+import itertools
+
 
 Street = namedtuple('Street', 'StreetName start end')
 Coordinate = namedtuple('Coordinate', 'x y')
@@ -63,6 +66,13 @@ def initialize_street_information():
                 	end=Coordinate(x=int(entry[3]), y=int(entry[4]))))
     return street_info
 
+def extract_coordinates():
+	street_info = initialize_street_information()
+	coordinate_set = set()
+	for i in street_info:
+		coordinate_set.add(i.start)
+		coordinate_set.add(i.end)
+	return coordinate_set
 
 def print_directions(explored, end):
     street_info = initialize_street_information()

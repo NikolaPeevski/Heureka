@@ -57,6 +57,7 @@ class MainUiClass(QMainWindow, Ui_MainWindow):
                     counter = counter+1
                     t0 = time.perf_counter()
                     total_cost = 0
+
                     #print('Computing, {} to {}'.format(i, j))
                     try:
                        result = GraphSearch.GraphSearch2(i, j)
@@ -66,6 +67,16 @@ class MainUiClass(QMainWindow, Ui_MainWindow):
                     for node in result:
                         cost = node.stepCost
                         total_cost += cost
+
+                    print('Computing, {} to {}'.format(i, j))
+                    try:
+                       result = GraphSearch.GraphSearch2(i, j)
+                    except:
+                       print('Failed {} to {}'.format(i,j))	
+                    t1 = time.perf_counter()
+                    for node in result:
+                    	cost = node.stepCost
+                    	total_cost += cost
                     final_cost.append(total_cost)
                     benchmark.append((t1-t0)*1000)
                     self.statusConsole.insertPlainText(
