@@ -64,8 +64,8 @@ def reevalPathcost(traversedNodes,initialState,currChild):
     prevPathCost = 0
     newPathCost = 0
     nodes = deepcopy(traversedNodes)
-    prevPathCost = calcPathcost(initialState, currChild.State, nodes, prevPathCost)
-    newPathCost = calcPathcost(initialState, currChild.Parent, nodes, newPathCost) + currChild.stepCost
+    prevPathCost = calcPathcost(initialState, currChild.State, deepcopy(nodes), prevPathCost)
+    newPathCost = calcPathcost(initialState, currChild.Parent, deepcopy(nodes), newPathCost) + currChild.stepCost
     if prevPathCost > newPathCost:
         return True
     else:
@@ -104,7 +104,9 @@ def GraphSearch2(initialState, goalState):
                 if child not in everyNode:
                     everyNode.append(child)
                 pathCost = calcPathcost(initialState,child.State,deepcopy(pathTrail),pathCost) # Get path cost to current node using parent pointers - IMP to use this approach since path cost may change during the search
-                f = calcCost(child.State,goalState) + pathCost # f = g + h
+                f = calcCost(child.State,goalState) + pathCost # f = g + h  -> A* Algorithm
+                # f = pathCost # Dijkstra's Algorithm
+                # f = calcCost(child.State,goalState) # GBFS
                 frontier.append(Frontier(nodeObj=child,cost=f))
                 frontierSet.append(child.State)
         frontier = sorted(frontier, key=lambda cost: cost[1])  # Sorting according to f cost
@@ -112,8 +114,8 @@ def GraphSearch2(initialState, goalState):
 
 
 if __name__ == '__main__':
-    start = (10,70)
-    end = (65,110)
+    start = (80,70)
+    end = (35,120)
     GraphSearch2(start, end)
     # print_directions2(GraphSearch2(start,end), end)
 

@@ -1,5 +1,6 @@
 from collections import *
 from namedlist import namedlist
+from copy import deepcopy
 import  itertools
 
 Street = namedtuple('Street', 'StreetName start end')
@@ -90,8 +91,15 @@ def readPaths(filename):
                 Paths.append(line.replace("\n", ""))
     return Paths
 
+def extract_coordinates():
+    street_info = initialize_street_information()
+    coordinate_set = set()
+    for i in street_info:
+        coordinate_set.add(i.start)
+        coordinate_set.add(i.end)
+    return coordinate_set
 
-KB = readPaths('KB2.txt')
+KB = readPaths('KB.txt')
 print(KB)
 
 negsymbol = 'NOT'
@@ -127,7 +135,6 @@ def genResolution(kbList,negSymbol,toProve):
     kbList.append(toProve)
     return kbList
 
-
 def expDistribution(kbList):
     for i in range(0,len(kbList)):
         if(len(kbList[i][1])>1):
@@ -142,72 +149,76 @@ def expDistribution(kbList):
     return kbList
 
 
-def resolutionAlgorithm(EntryArrayState):
-
-    resolvedList = []
-    cnfList = EntryArrayState
-    #cnfList2 = cnfList[1:len(cnfList)]
-    #
-    # for clause in cnfList:
-    #
-    #
-    # #We can negate every item in cnfList
-    # for clause,clause2 in cnfList,cnfList2:
-    #     # We need to find NOT (x) and (x) pairs in any two clauses and eliminate this -> produce a new clause
-    #     for symbols,symbols2 in clause,clause2:
-    #         # compare the symbols in the clauses
-    #         symbols_neg = negation(symbols)
-    #         if symbols_neg == symbols2:
-    #             clause2.remove(symbols2)
-    #             clause.remove(symbols)
-    #             newclause = list([clause, clause2])
-
-    #Iterate over each state of the entry array
-    for state in cnfList:
-        defaultState = EntryArrayState
-        formatterOutput = resolutionArrayFormatter(state, defaultState.remove(state))
-        if formatterOutput != []:
-            #Concat with resolvedList
-            resolvedList.append((formatterOutput))
-    #Compare each state with the rest
-
-    #True - Remove the duplicable entries, Save into the new list - resolvedList
-    #False - Save into the new list
-
-    #Resolve the list
-    return resolvedList
-
-def resolutionArrayFormatter(entry, array):
-    for i in array:
-        resolutionArrayCheck(entry, i)
-    return []
-
-def resolutionArrayCheck(entry, array):
-    return True
-
-def resolutionEntryCheck(entry, clause):
-    return True
-
-
-def formatEntry(entry1,entry2):
-    newEntry = []
-    for element in entry1:
-        if resolutionElementCheck(element,entry2):
-            newEntry = entry1.remove(element)
-    return newEntry
-
-def resolutionElementCheck(element, entryCheck):
-    for i in entryCheck:
-        if negation(element) == i:
-            return True
-    return False
-
 
 def expandNode(kbList):
     edges = []
     return edges
 
+def negateList(posList):
+    negList = []
+    for i in posList:
+        negList.append(negation([i]))
+    return negList
+
+def removeRNOT(symbol): # Removes Redundant NOT symbols
+    condensed = symbol.split("NOT ")
+    if (len(condensed)%2 == 0):
+        return 'NOT ' + condensed[-1]
+    else:
+        return condensed[-1]
+
+def removeRNOTlist(List):
+    notList = []
+    for i in range(0,len(List)):
+        notList.append(removeRNOT(List[i]))
+    return notList
+
+def negateKB(KBlist):
+    negatedList = []
+    for i in KBlist:
+        x = negateList(i)
+        y = removeRNOTlist(x)
+        negatedList.append(y)
+    return negatedList
+
+
+def simplifyKB(KB):
+    simpleKB = []
+    for i in KB:
+        if (len(i[1]) > 0):
+            store = [i[0],i[1][0]]
+        else:
+            store = [i[0]]
+        simpleKB.append(store)
+    return simpleKB
+
+
 KB = parseKB(KB)
+print(KB)
+# KB = expDistribution(KB)
 # KB = resolutionAlgorithm(KB)
-for i in KB:
-    print(i)
+print(KB)
+
+
+testList1 = ['bu','NOT fo','te']
+# negateList(KB)
+simpleKB = simplifyKB(KB)
+checker = 'NOT NOT NOT NOT NOT fo'
+print(simpleKB)
+testList2 = ['bu','NOT fo']
+#commons = set(testList1).intersection(testList2)
+#print(negateList([testList1]))
+
+negKB = negateKB(deepcopy(simpleKB))
+
+
+# Preliminary Code for Resolution Algorithm - Finding the common pairwise elements using intersection
+# Note that some sets are the same but inverted : Comparing set 2 and 5 is like comparing set 5 and 2 - room for optimization in that regard
+# For resolution: we want to choose the set which contains the highest number of elements and then remove those two items from our original KB list
+for i in range(0,len(simpleKB)):
+    x = []
+    for j in range(0,len(simpleKB)):
+        if i != j:
+            x.append(set(simpleKB[i]).intersection(simpleKB[j]))
+
+    print('Set Number ',i, ': ',x)

@@ -1,6 +1,7 @@
-fo IF to,bu
-NOT fo IF e
-co
-te
-NOT to
+fo IF to,bu,ju
+NOT fo IF ju
+fo IF eg
+co IF milk,sugar
+te IF milk,sugar
+to
 bu
