@@ -3,8 +3,9 @@ br IF h,j,f
 br IF h,f
 h  IF te
 fo IF to,bu
-NOT fo IF e
+fo IF e
 co
 te
 to
 bu
+e
