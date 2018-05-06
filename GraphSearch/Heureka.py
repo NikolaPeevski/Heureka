@@ -25,8 +25,8 @@ class MainUiClass(QMainWindow, Ui_MainWindow):
         start_coord = re.findall(r'\d+', start)
         destination_coord = re.findall(r'\d+', destination)
 
-        result = GraphSearch.GraphSearch2((int(start_coord[0]), int(start_coord[1])),
-                                          (int(destination_coord[0]), int(destination_coord[1])))
+        result = GraphSearch.GraphSearch((int(start_coord[0]), int(start_coord[1])),
+                                          (int(destination_coord[0]), int(destination_coord[1])),'path')
         self.map.mark_paths(result)
         self.statusConsole.clear()
         street_string_info = "\n".join(str(a) for a in self.street_info)
@@ -60,7 +60,7 @@ class MainUiClass(QMainWindow, Ui_MainWindow):
 
                     #print('Computing, {} to {}'.format(i, j))
                     try:
-                       result = GraphSearch.GraphSearch2(i, j)
+                       result = GraphSearch.GraphSearch(i, j,'path')
                     except:
                        print('Failed {} to {}'.format(i,j)) 
                     t1 = time.perf_counter()
@@ -70,7 +70,7 @@ class MainUiClass(QMainWindow, Ui_MainWindow):
 
                     print('Computing, {} to {}'.format(i, j))
                     try:
-                       result = GraphSearch.GraphSearch2(i, j)
+                       result = GraphSearch.GraphSearch(i, j,'path')
                     except:
                        print('Failed {} to {}'.format(i,j))	
                     t1 = time.perf_counter()
