@@ -5,14 +5,14 @@ from copy import deepcopy
 from GraphUtils import *
 from GraphSearch import *
 
-KB = readPaths('KB.txt')
+KB = readPaths('KB2.txt')
 
 KB = parseKB(KB)
 
 simpleKB = simplifyKB(KB) #Turns the parsed KB into [A,B,...],[C,D,...] : A list of clauses
 print(simpleKB)
 
-thesis = ['bu','e','to'] # What we are trying to prove  bu and e
+thesis = ['R'] # What we are trying to prove  bu and e
 toProve = negateList(deepcopy(thesis)) # Proof by contradiction -> not bu or not e
 RULES = simpleKB # The Rules we have
 RULES.append(toProve) # We append the negated thesis to it
